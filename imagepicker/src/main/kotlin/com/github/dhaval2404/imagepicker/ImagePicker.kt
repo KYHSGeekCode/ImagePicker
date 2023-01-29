@@ -292,14 +292,16 @@ open class ImagePicker {
         /**
          * Get Intent
          */
-        fun createIntent(onResult: (Intent) -> Unit) {
+        fun createIntent(onResult: (Intent?) -> Unit) {
             if (imageProvider == ImageProvider.BOTH) {
                 DialogHelper.showChooseAppDialog(
                     activity,
                     object : ResultListener<ImageProvider> {
                         override fun onResult(t: ImageProvider?) {
-                            t?.let {
-                                imageProvider = it
+                            if (t == null) {
+                                onResult(null)
+                            } else {
+                                imageProvider = t
                                 imageProviderInterceptor?.invoke(imageProvider)
                                 onResult(createIntent())
                             }
